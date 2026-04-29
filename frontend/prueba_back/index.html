@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Registro</title>
+</head>
+<body>
+
+  <h2>Registro de usuario</h2>
+
+  <input type="text" id="nombre" placeholder="Nombre"><br><br>
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+
+  <button onclick="registrar()">Registrar</button>
+
+  <p id="respuesta"></p>
+
+  <script>
+    async function registrar() {
+
+      const datos = {
+        nombre: document.getElementById("nombre").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+      };
+
+      console.log("Enviando:", datos);
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/registro/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(datos)
+        });
+
+        const data = await response.json();
+
+        console.log("Respuesta API:", data);
+
+        if (response.ok) {
+          document.getElementById("respuesta").innerText =
+            "✅ Usuario creado con ID: " + (data.id || "OK");
+        } else {
+          document.getElementById("respuesta").innerText =
+            "❌ Error: " + JSON.stringify(data);
+        }
+
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("respuesta").innerText =
+          "❌ Error de conexión con el servidor";
+      }
+    }
+  </script>
+
+</body>
+</html>
