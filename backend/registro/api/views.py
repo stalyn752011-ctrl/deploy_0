@@ -4,9 +4,11 @@ from rest_framework.views import APIView
 from .models import Registro, Cursos
 from .serializers import RegistroSerializer, CursosSerializer
 
+from django.http import HttpResponse
+
 class MainPageView(APIView):
     def get(self, request):
-        return Response({'message': 'holaputita'})
+        return HttpResponse('<h1>hola stalyn</h1>', content_type='text/html')
 
 class RegistroCreateView(generics.CreateAPIView):
     queryset = Registro.objects.all()
