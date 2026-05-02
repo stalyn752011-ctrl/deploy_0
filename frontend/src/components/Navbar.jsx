@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
@@ -30,21 +29,14 @@ function Navbar() {
         </div>
 
         <nav className="main-nav"> 
-          {/* Aquí irán los links principales de navegación */}
+          <Link to="/landing">Landing</Link>
+          <Link to="/subida-cursos">Subir Curso</Link>
+          <Link to="/hola-stalyn">Hola Stalyn</Link>
         </nav>
 
         <div className="actions">
           <button className="icon-btn bell" aria-label="Notificaciones">🔔<span className="badge">5</span></button>
-          <div className="avatar-wrap">
-            <button id="avatarBtn" className="avatar-btn" onClick={() => setMenuOpen(!menuOpen)}>TU</button>
-            <div id="avatarMenu" className={`avatar-menu ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
-              <Link to="/profile">Mi Perfil</Link>
-              <a href="#">Configuración</a>
-              <a href="#">Mis Logros</a>
-              <hr />
-              <a href="#">Cerrar Sesión</a>
-            </div>
-          </div>
+          <Link to="/profile" className="avatar-btn avatar-link">TU</Link>
         </div>
       </div>
     </header>

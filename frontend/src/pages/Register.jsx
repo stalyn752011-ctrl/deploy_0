@@ -27,7 +27,7 @@ function Register() {
       });
       if (response.ok) {
         alert("Registro exitoso");
-        navigate("/login");
+        navigate("/landing");
       } else {
         alert("Error al registrarse");
       }

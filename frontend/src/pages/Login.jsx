@@ -20,7 +20,7 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         alert(`Bienvenido, ${data.nombre}`);
-        navigate("/");
+        navigate("/landing");
       } else {
         alert("Credenciales inválidas");
       }

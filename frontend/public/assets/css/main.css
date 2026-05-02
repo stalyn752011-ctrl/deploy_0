@@ -92,6 +92,24 @@ a{color:inherit;text-decoration:none}
   box-shadow:0 6px 18px rgba(123,44,255,0.12);
 }
 
+/* Main Nav Links */
+.main-nav{
+  display:flex;
+  gap:24px;
+  align-items:center;
+}
+
+.main-nav a{
+  color:#666;
+  font-weight:500;
+  font-size:0.95rem;
+  transition:color .2s ease;
+}
+
+.main-nav a:hover{
+  color:#7b2cff;
+}
+
 /* Actions */
 .actions{
   display:flex;
@@ -141,6 +159,10 @@ a{color:inherit;text-decoration:none}
   border:none;
   font-weight:700;
   cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
 }
 
 .avatar-menu{
