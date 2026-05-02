@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
 
     # TU APP
     'api',
+    'subida_cursos',
 ]
 
 
@@ -117,6 +119,30 @@ USE_TZ = True
 # ======================
 STATIC_URL = 'static/'
 
+# ======================
+# MEDIA
+# ======================
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# ======================
+# BASE URL (para URLs absolutas de videos)
+# ======================
+# Local: 'http://localhost:8000'
+# Externo: 'http://tu-ip:8000' o dominio publico
+BASE_URL = 'http://localhost:8000'
+
+
+# ======================
+# REST FRAMEWORK
+# ======================
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ]
+}
 
 # ======================
 # DEFAULT AUTO FIELD
