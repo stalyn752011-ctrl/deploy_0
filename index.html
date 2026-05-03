@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnHub - E-Learning Dashboard</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#f8f7fc;--white:#ffffff;--purple:#8b7fc8;--purple-light:#e8e4f5;
+    --purple-dark:#6c5ca5;--text:#2d2b3a;--text-light:#6b6890;
+    --shadow:0 4px 24px rgba(139,127,200,.12);--radius:16px;--radius-sm:10px;
+  }
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex}
+  a{text-decoration:none;color:inherit}
+
+  /* Sidebar */
+  .sidebar{width:72px;background:var(--white);border-right:1px solid var(--purple-light);display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:8px;position:fixed;left:0;top:0;height:100vh;z-index:100}
+  .sidebar-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));border-radius:10px;display:grid;place-items:center;margin-bottom:20px}
+  .sidebar-logo svg{width:20px;height:20px;fill:#fff}
+  .sidebar-item{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;cursor:pointer;transition:.2s;position:relative}
+  .sidebar-item svg{width:20px;height:20px;stroke:var(--text-light);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .sidebar-item.active{background:var(--purple-light)}
+  .sidebar-item.active svg{stroke:var(--purple)}
+  .sidebar-item:hover:not(.active){background:var(--bg)}
+  .sidebar-spacer{flex:1}
+  .sidebar-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#d4c8f0,#a89fd0);overflow:hidden}
+
+  /* Main wrapper */
+  .main{margin-left:72px;flex:1;display:flex;flex-direction:column}
+
+  /* Top nav */
+  .topnav{background:var(--white);border-bottom:1px solid var(--purple-light);padding:12px 32px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:50}
+  .search-box{flex:1;max-width:480px;position:relative}
+  .search-box input{width:100%;padding:10px 16px 10px 40px;border:1.5px solid var(--purple-light);border-radius:12px;font-size:14px;background:var(--bg);outline:none;transition:.2s}
+  .search-box input:focus{border-color:var(--purple)}
+  .search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--text-light);fill:none;stroke-width:2}
+  .topnav-right{display:flex;align-items:center;gap:16px;margin-left:auto}
+  .topnav-icon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;cursor:pointer;position:relative}
+  .topnav-icon svg{width:20px;height:20px;stroke:var(--text-light);fill:none;stroke-width:1.8}
+  .topnav-icon:hover{background:var(--bg)}
+  .badge{position:absolute;top:4px;right:4px;width:8px;height:8px;background:#f56565;border-radius:50%}
+  .topnav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#c4b5e0,#8b7fc8);display:grid;place-items:center;cursor:pointer}
+  .topnav-avatar svg{width:18px;height:18px;fill:#fff}
+
+  /* Content */
+  .content{padding:32px 36px;flex:1}
+
+  /* Hero */
+  .hero{background:linear-gradient(135deg,#f0ecfa 0%,#e8e4f5 50%,#f5f2fc 100%);border-radius:var(--radius);padding:48px 56px;display:flex;align-items:center;gap:48px;margin-bottom:36px;overflow:hidden;position:relative}
+  .hero-text{flex:1;position:relative;z-index:2}
+  .hero-label{display:inline-block;font-size:12px;font-weight:600;color:var(--purple);background:rgba(139,127,200,.12);padding:4px 12px;border-radius:20px;margin-bottom:16px;letter-spacing:.5px;text-transform:uppercase}
+  .hero h1{font-size:36px;font-weight:700;line-height:1.2;margin-bottom:14px;color:var(--text)}
+  .hero h1 span{color:var(--purple)}
+  .hero p{font-size:15px;color:var(--text-light);line-height:1.6;margin-bottom:24px;max-width:420px}
+  .hero-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--purple);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+  .hero-btn:hover{background:var(--purple-dark);transform:translateY(-1px)}
+  .hero-btn svg{width:16px;height:16px;fill:#fff}
+  .hero-illust{width:320px;height:240px;flex-shrink:0;position:relative}
+  .hero-illust svg{width:100%;height:100%}
+
+  /* Section header */
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .section-header h2{font-size:20px;font-weight:700}
+  .section-header a{font-size:13px;color:var(--purple);font-weight:600}
+  .section-header a:hover{text-decoration:underline}
+
+  /* Course grid */
+  .courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;margin-bottom:36px}
+
+  /* Course card */
+  .card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:.25s;cursor:pointer}
+  .card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(139,127,200,.18)}
+  .card-thumb{position:relative;width:100%;aspect-ratio:16/9;background:#1a1625;overflow:hidden}
+  .card-thumb-img{width:100%;height:100%;object-fit:cover;display:block}
+  .video-paused{width:100%;height:100%;background:linear-gradient(145deg,#23203a,#1a1625);display:flex;align-items:center;justify-content:center;position:relative}
+  .video-paused::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 60%,rgba(0,0,0,.5) 100%)}
+  .play-btn{width:52px;height:52px;background:rgba(255,255,255,.92);border-radius:50%;display:grid;place-items:center;z-index:2;transition:.2s;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+  .play-btn svg{width:20px;height:20px;fill:var(--purple);margin-left:3px}
+  .play-btn:hover{transform:scale(1.08);background:#fff}
+  .video-time{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;z-index:2}
+  .video-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.15);z-index:2}
+  .video-progress-bar{height:100%;width:35%;background:var(--purple);border-radius:0 2px 2px 0}
+  .card-body{padding:16px 18px 18px}
+  .card-tags{display:flex;gap:6px;margin-bottom:8px}
+  .card-tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px}
+  .tag-purple{background:rgba(139,127,200,.12);color:var(--purple)}
+  .tag-green{background:rgba(72,187,120,.12);color:#38a169}
+  .tag-orange{background:rgba(237,137,54,.12);color:#c05621}
+  .card-title{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-desc{font-size:12.5px;color:var(--text-light);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-light)}
+  .card-rating{display:flex;align-items:center;gap:4px}
+  .card-rating svg{width:14px;height:14px;fill:#f6c555;stroke:#f6c555;stroke-width:.5}
+  .card-rating span{font-weight:600;color:var(--text)}
+  .card-meta-item{display:flex;align-items:center;gap:4px}
+  .card-meta-item svg{width:14px;height:14px;stroke:var(--text-light);fill:none;stroke-width:1.8}
+  .card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--purple-light)}
+  .card-author{display:flex;align-items:center;gap:8px}
+  .card-author-img{width:26px;height:26px;border-radius:50%;background:var(--purple-light)}
+  .card-author-name{font-size:12px;font-weight:600}
+  .card-price{font-size:14px;font-weight:700;color:var(--purple)}
+  .card-price.free{color:#38a169}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  </div>
+  <div class="sidebar-item active" title="Home">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </div>
+  <div class="sidebar-item" title="Explore">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  </div>
+  <div class="sidebar-item" title="My Courses">
+    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+  </div>
+  <div class="sidebar-item" title="Calendar">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  </div>
+  <div class="sidebar-item" title="Messages">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  </div>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-item" title="Settings">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </div>
+  <div class="sidebar-avatar"></div>
+</nav>
+
+<!-- Main content -->
+<div class="main">
+  <!-- Top navigation -->
+  <header class="topnav">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search courses, topics, or instructors...">
+    </div>
+    <div class="topnav-right">
+      <div class="topnav-icon">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="badge"></span>
+      </div>
+      <div class="topnav-icon">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div class="topnav-avatar">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content area -->
+  <div class="content">
+    <!-- Hero section -->
+    <section class="hero">
+      <div class="hero-text">
+        <span class="hero-label">New Courses Available</span>
+        <h1>Learn without<br><span>limits</span></h1>
+        <p>Discover thousands of courses taught by world-class instructors and advance your career with flexible online learning.</p>
+        <button class="hero-btn">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Browse Courses
+        </button>
+      </div>
+      <div class="hero-illust">
+        <svg viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background circle -->
+          <circle cx="160" cy="120" r="100" fill="rgba(139,127,200,.1)"/>
+          <circle cx="160" cy="120" r="70" fill="rgba(139,127,200,.08)"/>
+          <!-- Laptop -->
+          <rect x="80" y="100" width="160" height="100" rx="8" fill="#fff" stroke="#8b7fc8" stroke-width="2"/>
+          <rect x="90" y="110" width="140" height="72" rx="4" fill="#e8e4f5"/>
+          <!-- Screen content -->
+          <rect x="100" y="120" width="50" height="6" rx="3" fill="#8b7fc8" opacity=".5"/>
+          <rect x="100" y="132" width="80" height="4" rx="2" fill="#8b7fc8" opacity=".3"/>
+          <rect x="100" y="140" width="60" height="4" rx="2" fill="#8b7fc8" opacity=".3"/>
+          <rect x="100" y="148" width="70" height="4" rx="2" fill="#8b7fc8" opacity=".3"/>
+          <!-- Play button on screen -->
+          <circle cx="160" cy="146" r="14" fill="#8b7fc8" opacity=".9"/>
+          <polygon points="156,138 156,154 170,146" fill="#fff"/>
+          <!-- Laptop base -->
+          <rect x="70" y="198" width="180" height="8" rx="4" fill="#d4c8f0"/>
+          <!-- Graduation cap -->
+          <g transform="translate(210, 50)">
+            <polygon points="0,30 40,30 50,15 50,0 30,-5 10,0 10,15" fill="#8b7fc8"/>
+            <polygon points="0,30 40,30 50,15 10,15" fill="#6c5ca5"/>
+            <circle cx="50" cy="15" r="4" fill="#f6c555"/>
+            <rect x="48" y="30" width="4" height="20" rx="1" fill="#6c5ca5"/>
+            <polygon points="48,50 52,50 50,56" fill="#6c5ca5"/>
+          </g>
+          <!-- Floating elements -->
+          <circle cx="60" cy="50" r="6" fill="#d4c8f0" opacity=".6"/>
+          <circle cx="260" cy="180" r="8" fill="#e8e4f5" opacity=".5"/>
+          <rect x="40" y="160" width="12" height="12" rx="3" fill="#d4c8f0" opacity=".4" transform="rotate(15 46 166)"/>
+          <rect x="270" y="60" width="10" height="10" rx="2" fill="#c4b5e0" opacity=".4" transform="rotate(-10 275 65)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Popular courses -->
+    <div class="section-header">
+      <h2>Popular Courses</h2>
+      <a href="#">View all →</a>
+    </div>
+    <div class="courses">
+      <!-- Card 1 -->
+      <div class="card">
+        <div class="card-thumb">
+          <div class="video-paused">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <span class="video-time">12:34</span>
+            <div class="video-progress"><div class="video-progress-bar"></div></div>
+            <!-- Abstract thumbnail content -->
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.15" viewBox="0 0 280 157">
+              <rect x="20" y="20" width="80" height="6" rx="3" fill="#fff"/>
+              <rect x="20" y="32" width="120" height="4" rx="2" fill="#fff"/>
+              <rect x="20" y="40" width="90" height="4" rx="2" fill="#fff"/>
+              <circle cx="200" cy="80" r="30" fill="#8b7fc8"/>
+              <rect x="100" y="60" width="60" height="40" rx="6" fill="#6c5ca5" opacity=".5"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag tag-purple">Design</span></div>
+          <div class="card-title">UI/UX Design Fundamentals for Beginners</div>
+          <div class="card-desc">Learn the core principles of user interface and experience design from scratch.</div>
+          <div class="card-meta">
+            <span class="card-rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.8
+            </span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 8h</span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 2.4k</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-author"><div class="card-author-img"></div><span class="card-author-name">Sarah Chen</span></div>
+            <span class="card-price">$49</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <div class="card-thumb">
+          <div class="video-paused" style="background:linear-gradient(145deg,#1e2a3a,#162030)">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <span class="video-time">18:22</span>
+            <div class="video-progress"><div class="video-progress-bar" style="width:65%"></div></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.12" viewBox="0 0 280 157">
+              <rect x="30" y="30" width="60" height="60" rx="8" fill="#4fd1c5"/>
+              <rect x="110" y="40" width="100" height="6" rx="3" fill="#fff"/>
+              <rect x="110" y="52" width="80" height="4" rx="2" fill="#fff"/>
+              <rect x="110" y="60" width="90" height="4" rx="2" fill="#fff"/>
+              <circle cx="50" cy="120" r="15" fill="#38b2ac" opacity=".6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag tag-green">Development</span></div>
+          <div class="card-title">React & TypeScript Masterclass 2026</div>
+          <div class="card-desc">Build modern web apps with React and TypeScript best practices.</div>
+          <div class="card-meta">
+            <span class="card-rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.9
+            </span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 24h</span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 5.1k</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-author"><div class="card-author-img" style="background:#c6f6e5"></div><span class="card-author-name">Alex Morgan</span></div>
+            <span class="card-price">$79</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <div class="card-thumb">
+          <div class="video-paused" style="background:linear-gradient(145deg,#2a1e3a,#201530)">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <span class="video-time">6:45</span>
+            <div class="video-progress"><div class="video-progress-bar" style="width:20%"></div></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.12" viewBox="0 0 280 157">
+              <rect x="20" y="20" width="240" height="117" rx="8" fill="#6c5ca5"/>
+              <rect x="40" y="40" width="80" height="6" rx="3" fill="#fff"/>
+              <rect x="40" y="52" width="120" height="4" rx="2" fill="#fff"/>
+              <rect x="40" y="60" width="100" height="4" rx="2" fill="#fff"/>
+              <circle cx="220" cy="110" r="20" fill="#8b7fc8" opacity=".6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag tag-orange">Marketing</span></div>
+          <div class="card-title">Digital Marketing Strategy & SEO</div>
+          <div class="card-desc">Master SEO, content marketing, and analytics to grow your business.</div>
+          <div class="card-meta">
+            <span class="card-rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.7
+            </span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 12h</span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 3.8k</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-author"><div class="card-author-img" style="background:#fbd38d"></div><span class="card-author-name">James Lee</span></div>
+            <span class="card-price free">Free</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card">
+        <div class="card-thumb">
+          <div class="video-paused" style="background:linear-gradient(145deg,#1a2a1a,#152015)">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <span class="video-time">15:10</span>
+            <div class="video-progress"><div class="video-progress-bar" style="width:50%"></div></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.12" viewBox="0 0 280 157">
+              <circle cx="140" cy="78" r="40" fill="#38a169" opacity=".5"/>
+              <rect x="40" y="30" width="90" height="6" rx="3" fill="#fff"/>
+              <rect x="40" y="42" width="130" height="4" rx="2" fill="#fff"/>
+              <rect x="40" y="50" width="70" height="4" rx="2" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag tag-green">Data Science</span></div>
+          <div class="card-title">Python for Data Analysis & ML</div>
+          <div class="card-desc">Use Python, pandas, and scikit-learn for real-world data projects.</div>
+          <div class="card-meta">
+            <span class="card-rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.9
+            </span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 32h</span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 8.2k</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-author"><div class="card-author-img" style="background:#9ae6b4"></div><span class="card-author-name">Dr. Maya Patel</span></div>
+            <span class="card-price">$99</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recently viewed -->
+    <div class="section-header">
+      <h2>Continue Learning</h2>
+      <a href="#">View all →</a>
+    </div>
+    <div class="courses">
+      <!-- Card 5 -->
+      <div class="card">
+        <div class="card-thumb">
+          <div class="video-paused" style="background:linear-gradient(145deg,#2a2020,#201818)">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <span class="video-time">22:08</span>
+            <div class="video-progress"><div class="video-progress-bar" style="width:78%"></div></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.12" viewBox="0 0 280 157">
+              <rect x="20" y="20" width="100" height="117" rx="6" fill="#c53030" opacity=".4"/>
+              <rect x="140" y="40" width="100" height="6" rx="3" fill="#fff"/>
+              <rect x="140" y="52" width="80" height="4" rx="2" fill="#fff"/>
+              <rect x="140" y="60" width="90" height="4" rx="2" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag tag-purple">Photography</span></div>
+          <div class="card-title">Advanced Mobile Photography</div>
+          <div class="card-desc">Take stunning photos with just your smartphone using pro techniques.</div>
+          <div class="card-meta">
+            <span class="card-rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.6
+            </span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 6h</span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 1.5k</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-author"><div class="card-author-img" style="background:#fed7d7"></div><span class="card-author-name">Emma Wilson</span></div>
+            <span class="card-price">$39</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="card">
+        <div class="card-thumb">
+          <div class="video-paused" style="background:linear-gradient(145deg,#1a1a2a,#121220)">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <span class="video-time">9:55</span>
+            <div class="video-progress"><div class="video-progress-bar" style="width:42%"></div></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.12" viewBox="0 0 280 157">
+              <rect x="60" y="30" width="160" height="97" rx="6" fill="#4c51bf" opacity=".4"/>
+              <rect x="80" y="50" width="80" height="6" rx="3" fill="#fff"/>
+              <rect x="80" y="62" width="120" height="4" rx="2" fill="#fff"/>
+              <rect x="80" y="70" width="100" height="4" rx="2" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag tag-green">Development</span></div>
+          <div class="card-title">Node.js Backend API Development</div>
+          <div class="card-desc">Build scalable REST APIs with Node.js, Express, and MongoDB.</div>
+          <div class="card-meta">
+            <span class="card-rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.8
+            </span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 18h</span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 4.3k</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-author"><div class="card-author-img" style="background:#c6f6e5"></div><span class="card-author-name">Tom Brooks</span></div>
+            <span class="card-price">$69</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="card">
+        <div class="card-thumb">
+          <div class="video-paused" style="background:linear-gradient(145deg,#2a251a,#201c15)">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <span class="video-time">14:30</span>
+            <div class="video-progress"><div class="video-progress-bar" style="width:55%"></div></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.12" viewBox="0 0 280 157">
+              <polygon points="140,20 200,80 220,120 60,120 80,80" fill="#d69e2e" opacity=".4"/>
+              <rect x="40" y="50" width="90" height="6" rx="3" fill="#fff"/>
+              <rect x="40" y="62" width="130" height="4" rx="2" fill="#fff"/>
+              <rect x="40" y="70" width="110" height="4" rx="2" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag tag-orange">Business</span></div>
+          <div class="card-title">Product Management Essentials</div>
+          <div class="card-desc">Learn to lead products from ideation to launch with agile methods.</div>
+          <div class="card-meta">
+            <span class="card-rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.7
+            </span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 10h</span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 2.9k</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-author"><div class="card-author-img" style="background:#fbd38d"></div><span class="card-author-name">Lisa Chang</span></div>
+            <span class="card-price free">Free</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="card">
+        <div class="card-thumb">
+          <div class="video-paused" style="background:linear-gradient(145deg,#1a2a2a,#152020)">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+            <span class="video-time">11:20</span>
+            <div class="video-progress"><div class="video-progress-bar" style="width:30%"></div></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.12" viewBox="0 0 280 157">
+              <rect x="30" y="30" width="90" height="90" rx="45" fill="#38b2ac" opacity=".4"/>
+              <rect x="140" y="40" width="100" height="6" rx="3" fill="#fff"/>
+              <rect x="140" y="52" width="80" height="4" rx="2" fill="#fff"/>
+              <rect x="140" y="60" width="90" height="4" rx="2" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags"><span class="card-tag tag-green">Data Science</span></div>
+          <div class="card-title">Machine Learning with TensorFlow</div>
+          <div class="card-desc">Build neural networks and ML models using TensorFlow and Keras.</div>
+          <div class="card-meta">
+            <span class="card-rating">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.9
+            </span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 28h</span>
+            <span class="card-meta-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 6.7k</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-author"><div class="card-author-img" style="background:#9ae6b4"></div><span class="card-author-name">Dr. Raj Kumar</span></div>
+            <span class="card-price">$89</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -43,6 +43,17 @@ class CursoListView(generics.ListAPIView):
     queryset = SubidaCurso.objects.all()
     serializer_class = SubidaCursoSerializer
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        data = serializer.data
+        # Ensure video_url is absolute
+        base_url = getattr(settings, 'BASE_URL', 'http://localhost:8000')
+        for item in data:
+            if item.get('video') and not item.get('video_url'):
+                item['video_url'] = f"{base_url}{item['video']}"
+        return Response(data)
+
 
 class CursoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = SubidaCurso.objects.all()
