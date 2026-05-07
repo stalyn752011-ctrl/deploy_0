@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API } from "../api";
 
 function RegisterForm() {
   const [nombre, setNombre] = useState("");
@@ -15,7 +16,7 @@ function RegisterForm() {
     }
 
     try {
-      const response = await fetch("https://deploy-0-2test.onrender.com/api/registro/", {
+      const response = await fetch(API.registro, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

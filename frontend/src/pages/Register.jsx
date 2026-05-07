@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API } from "../api";
 
 function Register() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Register() {
       return;
     }
     try {
-      const response = await fetch("https://deploy-0-2test.onrender.com/api/registro/", {
+      const response = await fetch(API.registro, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

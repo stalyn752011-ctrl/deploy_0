@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Profile.css';
+import { API } from '../api';
 
 function Profile() {
   const [activeNav, setActiveNav] = useState('my-courses');
@@ -17,7 +18,7 @@ function Profile() {
 
     const user = JSON.parse(stored);
 
-    fetch(`http://localhost:8000/api/user/${encodeURIComponent(user.email)}/`)
+    fetch(API.user(user.email))
       .then(res => res.json())
       .then(data => {
         setFormData({ nombre: data.nombre, email: data.email, language: data.language || 'en' });
@@ -40,7 +41,7 @@ function Profile() {
     const user = JSON.parse(stored);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/user/${encodeURIComponent(user.email)}/`, {
+      const response = await fetch(API.user(user.email), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -15,7 +15,7 @@ form.addEventListener('submit', async (e) => {
     }
 
     try {
-        const response = await fetch('https://deploy-0-2test.onrender.com/api/registro/', {
+        const response = await fetch('/api/registro/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

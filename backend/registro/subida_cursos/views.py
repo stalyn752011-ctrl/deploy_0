@@ -7,6 +7,7 @@ from rest_framework import status as http_status
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from api.models import Registro
 from .models import SubidaCurso
 from .serializers import SubidaCursoSerializer
 
@@ -23,7 +24,16 @@ class CursoCreateView(generics.CreateAPIView):
         try:
             logger.info(f'Received upload request: {request.data.get("name")}')
             logger.info(f'Video file: {request.FILES.get("video")}')
-            serializer = self.get_serializer(data=request.data)
+            # Build mutable dict without deep-copying file objects
+            data = {key: request.data[key] for key in request.data.keys()}
+            author_email = data.get('author')
+            if author_email:
+                try:
+                    author = Registro.objects.get(email=author_email)
+                    data['author'] = author.pk
+                except Registro.DoesNotExist:
+                    data.pop('author', None)
+            serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             return Response(serializer.data, status=http_status.HTTP_201_CREATED)

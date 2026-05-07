@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API } from '../api';
 
 function VerCursos() {
   const [cursos, setCursos] = useState([]);
@@ -7,7 +8,7 @@ function VerCursos() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/subida-cursos/list/')
+    fetch(API.cursosList)
       .then(res => res.json())
       .then(data => {
         setCursos(data);
@@ -157,10 +158,10 @@ function CourseCard({ curso, onClick }) {
           <span style={styles.cardMetaItem}><ClockIcon/> 8h</span>
           <span style={styles.cardMetaItem}><UsersIcon/> 1.2k</span>
         </div>
-        <div style={styles.cardFooter}>
-          <div style={styles.cardAuthor}><div style={styles.cardAuthorImg}></div><span style={styles.cardAuthorName}>Instructor</span></div>
-          <span style={styles.cardPrice}>$49</span>
-        </div>
+            <div style={styles.cardFooter}>
+              <div style={styles.cardAuthor}><div style={styles.cardAuthorImg}></div><span style={styles.cardAuthorName}>{curso.author_name || 'Anónimo'}</span></div>
+              <span style={styles.cardPrice}>$49</span>
+            </div>
       </div>
     </div>
   );

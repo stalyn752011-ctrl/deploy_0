@@ -1,6 +1,7 @@
 import os
 from django.db import models
 from django.conf import settings
+from api.models import Registro
 
 
 def video_upload_path(instance, filename):
@@ -21,6 +22,7 @@ class SubidaCurso(models.Model):
     category = models.CharField(max_length=100)
     video = models.FileField(upload_to=video_upload_path)
     video_url = models.URLField(blank=True, default='')
+    author = models.ForeignKey(Registro, on_delete=models.SET_NULL, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         upload_dir = os.path.join(settings.MEDIA_ROOT, 'videos_cursos')

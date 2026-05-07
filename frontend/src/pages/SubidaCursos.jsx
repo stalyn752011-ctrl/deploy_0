@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './SubidaCursos.css';
+import { API } from '../api';
 
 function SubidaCursos() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ function SubidaCursos() {
   const [videoFile, setVideoFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [popup, setPopup] = useState({ show: false, message: '', type: '' });
+  const storedUser = localStorage.getItem('user');
+  const user = storedUser ? JSON.parse(storedUser) : null;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,12 +42,15 @@ function SubidaCursos() {
     data.append('category', formData.category);
     data.append('status', formData.status);
     data.append('video', videoFile);
+    if (user && user.email) {
+      data.append('author', user.email);
+    }
 
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 60000);
 
-      const response = await fetch('http://localhost:8000/api/subida-cursos/', {
+      const response = await fetch(API.subidaCursos, {
         method: 'POST',
         body: data,
         signal: controller.signal,
@@ -159,6 +165,9 @@ function SubidaCursos() {
           </div>
 
           <div className="form-actions">
+            <div className="author-info">
+              Subiendo como: <strong>{user ? user.nombre : 'Invitado'}</strong>
+            </div>
             <button type="submit" className="btn-submit" disabled={loading}>
               {loading ? 'Subiendo...' : 'Subir curso'}
             </button>
