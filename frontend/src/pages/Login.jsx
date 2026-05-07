@@ -19,7 +19,7 @@ function Login() {
       });
       if (response.ok) {
         const data = await response.json();
-        alert(`Bienvenido, ${data.nombre}`);
+        localStorage.setItem("user", JSON.stringify({ nombre: data.nombre, email: formData.email, language: data.language || 'en' }));
         navigate("/landing");
       } else {
         alert("Credenciales inválidas");

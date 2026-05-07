@@ -6,7 +6,8 @@ function Register() {
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
-    password: ""
+    password: "",
+    language: "es"
   });
 
   const handleChange = (e) => {
@@ -26,8 +27,9 @@ function Register() {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
-        alert("Registro exitoso");
-        navigate("/landing");
+        const data = await response.json();
+        localStorage.setItem("user", JSON.stringify({ nombre: data.nombre, email: data.email, language: "es" }));
+        navigate("/profile");
       } else {
         alert("Error al registrarse");
       }

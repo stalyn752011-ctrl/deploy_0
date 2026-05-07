@@ -4,6 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 function Navbar() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
+  const storedUser = localStorage.getItem('user');
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const initials = user ? user.nombre.charAt(0).toUpperCase() : 'TU';
 
   const onSearchKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -31,12 +34,12 @@ function Navbar() {
         <nav className="main-nav"> 
           <Link to="/landing">Landing</Link>
           <Link to="/subida-cursos">Subir Curso</Link>
-          <Link to="/hola-stalyn">Hola Stalyn</Link>
+          <Link to="/ver-cursos">Ver Cursos</Link>
         </nav>
 
         <div className="actions">
           <button className="icon-btn bell" aria-label="Notificaciones">🔔<span className="badge">5</span></button>
-          <Link to="/profile" className="avatar-btn avatar-link">TU</Link>
+          <Link to="/profile" className="avatar-btn avatar-link">{initials}</Link>
         </div>
       </div>
     </header>

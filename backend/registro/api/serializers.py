@@ -7,6 +7,12 @@ class RegistroSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registro
+        fields = ['nombre', 'email', 'language']
+
+
 class CursosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cursos

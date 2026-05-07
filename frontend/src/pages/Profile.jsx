@@ -1,32 +1,72 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Profile.css';
 
 function Profile() {
   const [activeNav, setActiveNav] = useState('my-courses');
-  const initialData = {
-    username: 'GrowlyUser',
-    email: 'user@growly.com',
-    language: 'en',
-  };
-  const [formData, setFormData] = useState(initialData);
+  const [formData, setFormData] = useState({ nombre: '', email: '', language: 'en' });
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('user');
+    if (!stored) {
+      setLoading(false);
+      return;
+    }
+
+    const user = JSON.parse(stored);
+
+    fetch(`http://localhost:8000/api/user/${encodeURIComponent(user.email)}/`)
+      .then(res => res.json())
+      .then(data => {
+        setFormData({ nombre: data.nombre, email: data.email, language: data.language || 'en' });
+      })
+      .catch(() => {
+        setFormData({ nombre: user.nombre, email: user.email, language: user.language || 'en' });
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setSaved(false);
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    const stored = localStorage.getItem('user');
+    if (!stored) return;
+    const user = JSON.parse(stored);
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/user/${encodeURIComponent(user.email)}/`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('user', JSON.stringify({ nombre: data.nombre, email: data.email, language: data.language }));
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleCancel = () => {
-    setFormData(initialData);
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      const user = JSON.parse(stored);
+      setFormData({ nombre: user.nombre, email: user.email, language: user.language || 'en' });
+    }
     setSaved(false);
   };
+
+  const initials = formData.nombre ? formData.nombre.charAt(0).toUpperCase() : '?';
 
   const navItems = [
     { id: 'my-courses', label: 'My Courses', icon: '📚' },
@@ -34,12 +74,14 @@ function Profile() {
     { id: 'help', label: 'Help', icon: '❓' },
   ];
 
+  if (loading) return <main className="profile-dashboard"><p>Loading...</p></main>;
+
   return (
     <main className="profile-dashboard">
       <aside className="profile-sidebar">
         <div className="sidebar-user">
-          <div className="sidebar-avatar">GU</div>
-          <span className="sidebar-name">GrowlyUser</span>
+          <div className="sidebar-avatar">{initials}</div>
+          <span className="sidebar-name">{formData.nombre}</span>
         </div>
         <nav className="sidebar-nav">
           {navItems.map((item) => (
@@ -62,22 +104,22 @@ function Profile() {
       <section className="profile-main">
         <div className="profile-card">
           <div className="profile-header">
-            <h2>Welcome back, GrowlyUser</h2>
+            <h2>Welcome back, {formData.nombre}</h2>
           </div>
 
           <div className="profile-avatar-section">
-            <div className="profile-avatar">GU</div>
+            <div className="profile-avatar">{initials}</div>
             <span className="profile-badge">Student</span>
           </div>
 
           <form className="profile-form" onSubmit={handleSave}>
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="nombre">Username</label>
               <input
-                id="username"
-                name="username"
+                id="nombre"
+                name="nombre"
                 type="text"
-                value={formData.username}
+                value={formData.nombre}
                 onChange={handleChange}
               />
             </div>
