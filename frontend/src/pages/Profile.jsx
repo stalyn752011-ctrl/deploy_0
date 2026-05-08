@@ -8,6 +8,8 @@ function Profile() {
   const [formData, setFormData] = useState({ nombre: '', email: '', language: 'en' });
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [myCourses, setMyCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('user');
@@ -27,6 +29,19 @@ function Profile() {
         setFormData({ nombre: user.nombre, email: user.email, language: user.language || 'en' });
       })
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('user');
+    if (!stored) return;
+    const user = JSON.parse(stored);
+
+    setCoursesLoading(true);
+    fetch(`${API.cursosList}?author_email=${encodeURIComponent(user.email)}`)
+      .then(res => res.json())
+      .then(data => setMyCourses(data))
+      .catch(() => setMyCourses([]))
+      .finally(() => setCoursesLoading(false));
   }, []);
 
   const handleChange = (e) => {
@@ -65,6 +80,18 @@ function Profile() {
       setFormData({ nombre: user.nombre, email: user.email, language: user.language || 'en' });
     }
     setSaved(false);
+  };
+
+  const handleDeleteCourse = async (courseID) => {
+    if (!window.confirm('Are you sure you want to delete this course?')) return;
+    try {
+      const res = await fetch(API.cursoDetail(courseID), { method: 'DELETE' });
+      if (res.ok) {
+        setMyCourses(prev => prev.filter(c => c.courseID !== courseID));
+      }
+    } catch (err) {
+      console.error('Delete failed', err);
+    }
   };
 
   const initials = formData.nombre ? formData.nombre.charAt(0).toUpperCase() : '?';
@@ -160,6 +187,37 @@ function Profile() {
               </button>
             </div>
           </form>
+
+          <div className="my-courses-section">
+            <h3>My Uploaded Courses</h3>
+            {coursesLoading ? (
+              <p className="courses-loading">Loading courses...</p>
+            ) : myCourses.length === 0 ? (
+              <p className="courses-empty">No courses uploaded yet.</p>
+            ) : (
+              <div className="courses-list">
+                {myCourses.map(course => (
+                  <div key={course.courseID} className="course-item">
+                    <div className="course-info">
+                      <span className="course-name">{course.name}</span>
+                      <span className="course-category">{course.category}</span>
+                      <span className={`course-status status-${course.status}`}>{course.status}</span>
+                    </div>
+                    {course.video_url && (
+                      <video src={course.video_url} className="course-thumb" muted preload="metadata" />
+                    )}
+                    <button
+                      className="course-delete-btn"
+                      onClick={() => handleDeleteCourse(course.courseID)}
+                      title="Delete course"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </main>

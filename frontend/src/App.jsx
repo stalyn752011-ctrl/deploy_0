@@ -11,6 +11,7 @@ import HolaStalyn from './pages/HolaStalyn';
 import Landing from './pages/Landing';
 import SubidaCursos from './pages/SubidaCursos';
 import VerCursos from './pages/VerCursos';
+import Notifications from './pages/Notifications';
 import './App.css';
 
 function AppContent() {
@@ -31,6 +32,7 @@ function AppContent() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/subida-cursos" element={<SubidaCursos />} />
           <Route path="/ver-cursos" element={<VerCursos />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Routes>
       </main>
       <Footer />

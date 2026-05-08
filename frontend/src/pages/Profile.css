@@ -159,10 +159,122 @@
 
 /* Form */
 .profile-form {
-  padding: 0 32px 32px;
+  padding: 0 32px 0;
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.my-courses-section {
+  padding: 24px 32px 32px;
+  border-top: 1px solid #e8e5ed;
+  margin-top: 24px;
+}
+
+.my-courses-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 16px;
+}
+
+.courses-loading,
+.courses-empty {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.course-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px solid #e8e5ed;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.course-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #1a1a2e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.course-category {
+  font-size: 0.8rem;
+  color: #6c3bff;
+  font-weight: 500;
+}
+
+.course-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+.status-pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+}
+
+.status-in_progress {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+}
+
+.status-finished {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.course-thumb {
+  width: 80px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.course-delete-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.course-delete-btn:hover {
+  background: #ef4444;
+  color: #fff;
 }
 
 .form-group {

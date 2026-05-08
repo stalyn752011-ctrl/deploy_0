@@ -38,7 +38,7 @@ function Navbar() {
         </nav>
 
         <div className="actions">
-          <button className="icon-btn bell" aria-label="Notificaciones">🔔<span className="badge">5</span></button>
+          <Link to="/notifications" className="icon-btn bell" aria-label="Notificaciones">🔔</Link>
           <Link to="/profile" className="avatar-btn avatar-link">{initials}</Link>
         </div>
       </div>

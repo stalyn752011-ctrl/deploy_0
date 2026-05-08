@@ -8,8 +8,8 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from api.models import Registro
-from .models import SubidaCurso
-from .serializers import SubidaCursoSerializer
+from .models import SubidaCurso, ContactMessage
+from .serializers import SubidaCursoSerializer, ContactMessageSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -50,14 +50,19 @@ class CursoCreateView(generics.CreateAPIView):
 
 
 class CursoListView(generics.ListAPIView):
-    queryset = SubidaCurso.objects.all()
     serializer_class = SubidaCursoSerializer
+
+    def get_queryset(self):
+        qs = SubidaCurso.objects.all()
+        author_email = self.request.query_params.get('author_email')
+        if author_email:
+            qs = qs.filter(author__email=author_email)
+        return qs
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
-        # Ensure video_url is absolute
         base_url = getattr(settings, 'BASE_URL', 'http://localhost:8000')
         for item in data:
             if item.get('video') and not item.get('video_url'):
@@ -69,3 +74,24 @@ class CursoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = SubidaCurso.objects.all()
     serializer_class = SubidaCursoSerializer
     lookup_field = 'courseID'
+
+    def perform_destroy(self, instance):
+        if instance.video and os.path.isfile(instance.video.path):
+            os.remove(instance.video.path)
+        instance.delete()
+
+
+class ContactMessageCreateView(generics.CreateAPIView):
+    queryset = ContactMessage.objects.all()
+    serializer_class = ContactMessageSerializer
+
+
+class ContactMessageListView(generics.ListAPIView):
+    serializer_class = ContactMessageSerializer
+
+    def get_queryset(self):
+        qs = ContactMessage.objects.select_related('course').all()
+        author_email = self.request.query_params.get('author_email')
+        if author_email:
+            qs = qs.filter(course__author__email=author_email)
+        return qs.order_by('-created_at')

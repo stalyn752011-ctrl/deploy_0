@@ -6,6 +6,10 @@ function VerCursos() {
   const [loading, setLoading] = useState(true);
   const [selectedCurso, setSelectedCurso] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showMessageForm, setShowMessageForm] = useState(false);
+  const [messageText, setMessageText] = useState('');
+  const [messageSent, setMessageSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     fetch(API.cursosList)
@@ -28,6 +32,31 @@ function VerCursos() {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedCurso(null);
+    setShowMessageForm(false);
+    setMessageText('');
+    setMessageSent(false);
+  };
+
+  const handleSendMessage = async () => {
+    const stored = localStorage.getItem('user');
+    if (!stored || !messageText.trim()) return;
+    const user = JSON.parse(stored);
+    setSending(true);
+    try {
+      const res = await fetch(API.contactMessages, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          course: selectedCurso.courseID,
+          sender_email: user.email,
+          message: messageText.trim(),
+        }),
+      });
+      if (res.ok) setMessageSent(true);
+    } catch (err) {
+      console.error(err);
+    }
+    setSending(false);
   };
 
   return (
@@ -117,7 +146,35 @@ function VerCursos() {
             <div style={styles.modalMeta}>
               <span style={styles.modalCategory}>{selectedCurso.category}</span>
               <span>Status: {selectedCurso.status}</span>
+              <span>By: {selectedCurso.author_name || 'Anónimo'}</span>
             </div>
+            {!showMessageForm ? (
+              <button style={styles.messageBtn} onClick={() => setShowMessageForm(true)}>
+                ✉️ Send Message
+              </button>
+            ) : messageSent ? (
+              <p style={styles.messageSent}>✓ Message sent!</p>
+            ) : (
+              <div style={styles.messageForm}>
+                <textarea
+                  style={styles.messageInput}
+                  placeholder="Write your message..."
+                  value={messageText}
+                  onChange={(e) => setMessageText(e.target.value)}
+                  rows={3}
+                />
+                <div style={styles.messageActions}>
+                  <button style={styles.messageCancel} onClick={() => setShowMessageForm(false)}>Cancel</button>
+                  <button
+                    style={styles.messageSubmit}
+                    onClick={handleSendMessage}
+                    disabled={sending || !messageText.trim()}
+                  >
+                    {sending ? 'Sending...' : 'Send'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -160,7 +217,6 @@ function CourseCard({ curso, onClick }) {
         </div>
             <div style={styles.cardFooter}>
               <div style={styles.cardAuthor}><div style={styles.cardAuthorImg}></div><span style={styles.cardAuthorName}>{curso.author_name || 'Anónimo'}</span></div>
-              <span style={styles.cardPrice}>$49</span>
             </div>
       </div>
     </div>
@@ -206,7 +262,6 @@ const styles = {
   cardAuthor: { display:'flex', alignItems:'center', gap:'8px' },
   cardAuthorImg: { width:'26px', height:'26px', borderRadius:'50%', background:'linear-gradient(135deg,#c4b5e0,#8b7fc8)' },
   cardAuthorName: { fontSize:'12px', fontWeight:600 },
-  cardPrice: { fontSize:'14px', fontWeight:700, color:'#8b7fc8' },
   modalOverlay: { position:'fixed', top:'0', left:'0', right:'0', bottom:'0', background:'rgba(0,0,0,.85)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:'1000', padding:'20px' },
   modalContent: { background:'#fff', borderRadius:'16px', padding:'32px', maxWidth:'900px', width:'100%', maxHeight:'90vh', overflow:'auto', position:'relative' },
   modalClose: { position:'absolute', top:'16px', right:'16px', width:'32px', height:'32px', borderRadius:'50%', border:'none', background:'#f8f7fc', fontSize:'24px', cursor:'pointer', display:'grid', placeItems:'center', lineHeight:'1' },
@@ -214,8 +269,15 @@ const styles = {
   modalDesc: { fontSize:'14px', color:'#6b6890', marginBottom:'20px', lineHeight:'1.6' },
   videoContainer: { marginBottom:'20px', borderRadius:'12px', overflow:'hidden' },
   noVideo: { padding:'40px', textAlign:'center', color:'#6b6890' },
-  modalMeta: { display:'flex', gap:'16px', fontSize:'13px', color:'#6b6890' },
+  modalMeta: { display:'flex', gap:'16px', fontSize:'13px', color:'#6b6890', marginBottom:'16px' },
   modalCategory: { background:'rgba(139,127,200,.12)', color:'#8b7fc8', padding:'4px 12px', borderRadius:'6px', fontWeight:600 },
+  messageBtn: { display:'flex', alignItems:'center', gap:'6px', padding:'10px 20px', background:'#8b7fc8', color:'#fff', border:'none', borderRadius:'10px', fontSize:'14px', fontWeight:600, cursor:'pointer', transition:'.2s' },
+  messageForm: { marginTop:'12px', display:'flex', flexDirection:'column', gap:'10px' },
+  messageInput: { width:'100%', padding:'12px', border:'1.5px solid #e8e4f5', borderRadius:'10px', fontSize:'14px', fontFamily:'inherit', resize:'vertical', boxSizing:'border-box', outline:'none' },
+  messageActions: { display:'flex', gap:'10px', justifyContent:'flex-end' },
+  messageCancel: { padding:'8px 18px', border:'1.5px solid #e8e4f5', background:'#fff', borderRadius:'8px', fontSize:'13px', fontWeight:600, color:'#666', cursor:'pointer' },
+  messageSubmit: { padding:'8px 18px', border:'none', background:'#8b7fc8', color:'#fff', borderRadius:'8px', fontSize:'13px', fontWeight:600, cursor:'pointer' },
+  messageSent: { color:'#38a169', fontWeight:600, fontSize:'14px', marginTop:'12px' },
 };
 
 export default VerCursos;
