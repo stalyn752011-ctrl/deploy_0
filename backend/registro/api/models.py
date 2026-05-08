@@ -9,7 +9,7 @@ class Registro(models.Model):
     ]
 
     nombre = models.CharField(max_length=100)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
     language = models.CharField(max_length=2, choices=LENGUAJES, default='en')
 
