@@ -18,32 +18,32 @@ class LoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
-        try:
-            user = Registro.objects.get(email=email, password=password)
-            return Response({'message': 'Login exitoso', 'nombre': user.nombre, 'email': user.email, 'language': user.language})
-        except Registro.DoesNotExist:
+        user = Registro.objects.filter(email=email, password=password).first()
+        if not user:
             return Response({'error': 'Credenciales inválidas'}, status=401)
+        return Response({'message': 'Login exitoso', 'nombre': user.nombre, 'email': user.email, 'language': user.language})
 
 
 class UserProfileView(APIView):
+    def get_user(self, email):
+        return Registro.objects.filter(email=email).first()
+
     def get(self, request, email):
-        try:
-            user = Registro.objects.get(email=email)
-            serializer = UserProfileSerializer(user)
-            return Response(serializer.data)
-        except Registro.DoesNotExist:
+        user = self.get_user(email)
+        if not user:
             return Response({'error': 'Usuario no encontrado'}, status=404)
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data)
 
     def put(self, request, email):
-        try:
-            user = Registro.objects.get(email=email)
-            serializer = UserProfileSerializer(user, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Registro.DoesNotExist:
+        user = self.get_user(email)
+        if not user:
             return Response({'error': 'Usuario no encontrado'}, status=404)
+        serializer = UserProfileSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CursosListView(generics.ListAPIView):

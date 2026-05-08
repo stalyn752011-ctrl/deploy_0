@@ -27,10 +27,10 @@ class ApuntesPDFCreateView(generics.CreateAPIView):
             data = {key: request.data[key] for key in request.data.keys()}
             author_email = data.get('author')
             if author_email:
-                try:
-                    author = Registro.objects.get(email=author_email)
+                author = Registro.objects.filter(email=author_email).first()
+                if author:
                     data['author'] = author.pk
-                except Registro.DoesNotExist:
+                else:
                     data.pop('author', None)
             serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
