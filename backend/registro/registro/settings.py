@@ -10,8 +10,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-CHANGE-THIS-KEY'
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '*']
+ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ['*']
+CORS_ALLOW_HEADERS = ['*']
 
 
 # ======================
