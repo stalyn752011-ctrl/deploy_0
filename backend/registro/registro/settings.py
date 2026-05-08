@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # TU APP
     'api',
     'subida_cursos',
+    'apuntes_pdf',
 ]
 
 

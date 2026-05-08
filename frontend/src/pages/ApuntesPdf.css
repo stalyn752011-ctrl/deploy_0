@@ -1,54 +1,27 @@
-.subida-cursos-page {
+.apuntes-pdf-page {
   padding: 40px 0 60px;
   background: #f5f3f7;
   min-height: calc(100vh - 80px);
 }
 
-.subida-container {
+.apuntes-container {
   max-width: 720px;
 }
 
-.subida-container h1 {
+.apuntes-container h1 {
   font-size: 2rem;
   font-weight: 700;
   color: #1a1a2e;
   margin: 0 0 8px;
 }
 
-.subida-subtitle {
+.apuntes-subtitle {
   color: #888;
   font-size: 1rem;
-  margin: 0;
+  margin: 0 0 32px;
 }
 
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 20px;
-  border: 1.5px solid #6c3bff;
-  border-radius: 12px;
-  color: #6c3bff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.btn-ghost:hover {
-  background: #6c3bff;
-  color: #fff;
-}
-
-.subida-form {
+.apuntes-form {
   background: #fff;
   border-radius: 20px;
   padding: 32px;
@@ -59,31 +32,20 @@
   gap: 24px;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.form-grid .form-group:nth-child(3) {
-  grid-column: 1 / -1;
-}
-
-.subida-form .form-group {
+.apuntes-form .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.subida-form .form-group label {
+.apuntes-form .form-group label {
   font-size: 0.875rem;
   font-weight: 600;
   color: #1a1a2e;
 }
 
-.subida-form input,
-.subida-form select,
-.subida-form textarea {
+.apuntes-form input,
+.apuntes-form textarea {
   padding: 12px 16px;
   border: 1.5px solid #e8e5ed;
   border-radius: 12px;
@@ -94,17 +56,21 @@
   font-family: inherit;
 }
 
-.subida-form textarea {
+.apuntes-form textarea {
   resize: vertical;
 }
 
-.subida-form input:focus,
-.subida-form select:focus,
-.subida-form textarea:focus {
+.apuntes-form input:focus,
+.apuntes-form textarea:focus {
   outline: none;
   border-color: #6c3bff;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(108, 59, 255, 0.1);
+}
+
+.author-info {
+  font-size: 0.9rem;
+  color: #888;
 }
 
 /* File Upload */
@@ -138,7 +104,7 @@
 }
 
 .file-upload-area::after {
-  content: 'Arrastra un video o haz clic para seleccionar';
+  content: 'Arrastra un PDF o haz clic para seleccionar';
   display: block;
   color: #888;
   font-size: 0.9rem;
@@ -287,19 +253,4 @@
 .btn-submit:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-}
-
-/* Responsive */
-@media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-grid .form-group:nth-child(3) {
-    grid-column: auto;
-  }
-
-  .subida-form {
-    padding: 20px;
-  }
 }

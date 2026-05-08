@@ -10,6 +10,7 @@ import Map from './pages/Map';
 import HolaStalyn from './pages/HolaStalyn';
 import Landing from './pages/Landing';
 import SubidaCursos from './pages/SubidaCursos';
+import ApuntesPdf from './pages/ApuntesPdf';
 import VerCursos from './pages/VerCursos';
 import Notifications from './pages/Notifications';
 import './App.css';
@@ -31,6 +32,7 @@ function AppContent() {
           <Route path="/hola-stalyn" element={<HolaStalyn />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/subida-cursos" element={<SubidaCursos />} />
+          <Route path="/apuntes-pdf" element={<ApuntesPdf />} />
           <Route path="/ver-cursos" element={<VerCursos />} />
           <Route path="/notifications" element={<Notifications />} />
         </Routes>

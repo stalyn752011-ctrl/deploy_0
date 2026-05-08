@@ -9,6 +9,7 @@ urlpatterns = [
     path('', MainPageView.as_view()),
     path('api/', include('api.urls')),
     path('api/', include('subida_cursos.urls')),
+    path('api/', include('apuntes_pdf.urls')),
 ]
 
 if settings.DEBUG:

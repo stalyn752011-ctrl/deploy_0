@@ -7,4 +7,7 @@ export const API = {
   cursoDetail: (id) => `/api/subida-cursos/${id}/`,
   contactMessages: '/api/contact-messages/',
   contactMessagesList: '/api/contact-messages/list/',
+  apuntesPdf: '/api/apuntes-pdf/',
+  apuntesPdfList: '/api/apuntes-pdf/list/',
+  apuntesPdfDetail: (id) => `/api/apuntes-pdf/${id}/`,
 };

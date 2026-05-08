@@ -1,16 +1,13 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './SubidaCursos.css';
+import './ApuntesPdf.css';
 import { API } from '../api';
 
-function SubidaCursos() {
+function ApuntesPdf() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: '',
-    status: 'pending',
   });
-  const [videoFile, setVideoFile] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [popup, setPopup] = useState({ show: false, message: '', type: '' });
   const storedUser = localStorage.getItem('user');
@@ -21,7 +18,7 @@ function SubidaCursos() {
   };
 
   const handleFileChange = (e) => {
-    setVideoFile(e.target.files[0]);
+    setPdfFile(e.target.files[0]);
   };
 
   const closePopup = () => setPopup({ show: false, message: '', type: '' });
@@ -31,8 +28,8 @@ function SubidaCursos() {
     setLoading(true);
     setPopup({ show: false, message: '', type: '' });
 
-    if (!videoFile) {
-      setPopup({ show: true, message: 'Por favor selecciona un video', type: 'error' });
+    if (!pdfFile) {
+      setPopup({ show: true, message: 'Por favor selecciona un PDF', type: 'error' });
       setLoading(false);
       return;
     }
@@ -40,9 +37,7 @@ function SubidaCursos() {
     const data = new FormData();
     data.append('name', formData.name);
     data.append('description', formData.description);
-    data.append('category', formData.category);
-    data.append('status', formData.status);
-    data.append('video', videoFile);
+    data.append('pdf', pdfFile);
     if (user && user.email) {
       data.append('author', user.email);
     }
@@ -51,7 +46,7 @@ function SubidaCursos() {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 60000);
 
-      const response = await fetch(API.subidaCursos, {
+      const response = await fetch(API.apuntesPdf, {
         method: 'POST',
         body: data,
         signal: controller.signal,
@@ -61,22 +56,22 @@ function SubidaCursos() {
 
       if (response.ok) {
         const result = await response.json();
-        setPopup({ show: true, message: 'Curso subido exitosamente', type: 'success' });
-        setFormData({ name: '', description: '', category: '', status: 'pending' });
-        setVideoFile(null);
+        setPopup({ show: true, message: 'PDF subido exitosamente', type: 'success' });
+        setFormData({ name: '', description: '' });
+        setPdfFile(null);
         setTimeout(closePopup, 4000);
       } else {
         const errText = await response.text();
         try {
           const errData = JSON.parse(errText);
-          const errMsg = errData.video || errData.message || errData.error || errData.detail || 'Error al subir el curso';
+          const errMsg = errData.pdf || errData.message || errData.error || errData.detail || 'Error al subir el PDF';
           setPopup({ show: true, message: typeof errMsg === 'object' ? Object.values(errMsg).flat().join(', ') : errMsg, type: 'error' });
         } catch {
           setPopup({ show: true, message: `Error del servidor (${response.status})`, type: 'error' });
         }
       }
     } catch (err) {
-      const msg = err.name === 'AbortError' ? 'El servidor tardó demasiado. Verifica que el backend esté activo en Render.' : 'Error de conexión: ' + err.message;
+      const msg = err.name === 'AbortError' ? 'El servidor tardó demasiado. Verifica que el backend esté activo.' : 'Error de conexión: ' + err.message;
       setPopup({ show: true, message: msg, type: 'error' });
     }
 
@@ -84,57 +79,23 @@ function SubidaCursos() {
   };
 
   return (
-    <main className="subida-cursos-page">
-      <div className="container subida-container">
-        <div className="page-header">
-          <div>
-            <h1>Subir Curso</h1>
-            <p className="subida-subtitle">Completa la información del curso y sube el video correspondiente</p>
-          </div>
-          <Link to="/apuntes-pdf" className="btn-ghost">Subir Notas</Link>
-        </div>
+    <main className="apuntes-pdf-page">
+      <div className="container apuntes-container">
+        <h1>Subir Apuntes PDF</h1>
+        <p className="apuntes-subtitle">Completa la información y sube el archivo PDF correspondiente</p>
 
-        <form className="subida-form" onSubmit={handleSubmit}>
-          <div className="form-grid">
-            <div className="form-group">
-              <label htmlFor="name">Nombre del curso</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Ej: Introducción a React"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="category">Categoría</label>
-              <input
-                id="category"
-                name="category"
-                type="text"
-                placeholder="Ej: Programación"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="status">Estado</label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-              >
-                <option value="pending">Pending to Start</option>
-                <option value="in_progress">In Progress</option>
-                <option value="finished">Finished</option>
-              </select>
-            </div>
+        <form className="apuntes-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Nombre del apunte</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Ej: Apuntes de Álgebra"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="form-group">
@@ -142,7 +103,7 @@ function SubidaCursos() {
             <textarea
               id="description"
               name="description"
-              placeholder="Describe el contenido del curso..."
+              placeholder="Describe el contenido del PDF..."
               value={formData.description}
               onChange={handleChange}
               rows="4"
@@ -151,20 +112,20 @@ function SubidaCursos() {
           </div>
 
           <div className="form-group">
-            <label>Video del curso</label>
+            <label>Archivo PDF</label>
             <div className="file-upload-area">
               <input
                 type="file"
-                id="video"
-                accept="video/mp4,video/webm,video/ogg,video/mov,video/avi,video/mkv,video/*"
+                id="pdf"
+                accept=".pdf,application/pdf"
                 onChange={handleFileChange}
                 className="file-input"
               />
-              {videoFile && (
+              {pdfFile && (
                 <div className="file-selected">
-                  <span className="file-icon">🎬</span>
-                  <span className="file-name">{videoFile.name}</span>
-                  <span className="file-size">{(videoFile.size / (1024 * 1024)).toFixed(2)} MB</span>
+                  <span className="file-icon">📄</span>
+                  <span className="file-name">{pdfFile.name}</span>
+                  <span className="file-size">{(pdfFile.size / (1024 * 1024)).toFixed(2)} MB</span>
                 </div>
               )}
             </div>
@@ -175,7 +136,7 @@ function SubidaCursos() {
               Subiendo como: <strong>{user ? user.nombre : 'Invitado'}</strong>
             </div>
             <button type="submit" className="btn-submit" disabled={loading}>
-              {loading ? 'Subiendo...' : 'Subir curso'}
+              {loading ? 'Subiendo...' : 'Subir PDF'}
             </button>
           </div>
         </form>
@@ -184,7 +145,7 @@ function SubidaCursos() {
           <div className="popup-overlay" onClick={closePopup}>
             <div className={`popup-card ${popup.type}`} onClick={(e) => e.stopPropagation()}>
               <span className="popup-icon">{popup.type === 'success' ? '✅' : '❌'}</span>
-              <h3>{popup.type === 'success' ? '¡Curso subido!' : 'Error'}</h3>
+              <h3>{popup.type === 'success' ? '¡PDF subido!' : 'Error'}</h3>
               <p>{popup.message}</p>
               <button className="popup-btn" onClick={closePopup}>
                 {popup.type === 'success' ? 'Genial' : 'Entendido'}
@@ -197,4 +158,4 @@ function SubidaCursos() {
   );
 }
 
-export default SubidaCursos;
+export default ApuntesPdf;
