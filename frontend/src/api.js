@@ -10,4 +10,6 @@ export const API = {
   apuntesPdf: '/api/apuntes-pdf/',
   apuntesPdfList: '/api/apuntes-pdf/list/',
   apuntesPdfDetail: (id) => `/api/apuntes-pdf/${id}/`,
+  contactMessagesPdf: '/api/contact-messages-pdf/',
+  contactMessagesPdfList: '/api/contact-messages-pdf/list/',
 };

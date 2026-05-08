@@ -53,6 +53,7 @@ function Navbar() {
           <Link to="/landing">Landing</Link>
           <Link to="/subida-cursos">Subir Curso</Link>
           <Link to="/apuntes-pdf">Subir Notas</Link>
+          <Link to="/ver-apuntes-pdf">Ver Notas</Link>
           <Link to="/ver-cursos">Ver Cursos</Link>
         </nav>
 

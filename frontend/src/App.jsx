@@ -11,13 +11,14 @@ import HolaStalyn from './pages/HolaStalyn';
 import Landing from './pages/Landing';
 import SubidaCursos from './pages/SubidaCursos';
 import ApuntesPdf from './pages/ApuntesPdf';
+import VerApuntesPdf from './pages/VerApuntesPdf';
 import VerCursos from './pages/VerCursos';
 import Notifications from './pages/Notifications';
 import './App.css';
 
 function AppContent() {
   const location = useLocation();
-  const isVerCursos = location.pathname === '/ver-cursos';
+  const isVerCursos = location.pathname === '/ver-cursos' || location.pathname === '/ver-apuntes-pdf';
   return (
     <div className="App">
       <Navbar />
@@ -33,6 +34,7 @@ function AppContent() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/subida-cursos" element={<SubidaCursos />} />
           <Route path="/apuntes-pdf" element={<ApuntesPdf />} />
+          <Route path="/ver-apuntes-pdf" element={<VerApuntesPdf />} />
           <Route path="/ver-cursos" element={<VerCursos />} />
           <Route path="/notifications" element={<Notifications />} />
         </Routes>

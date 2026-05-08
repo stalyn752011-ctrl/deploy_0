@@ -23,3 +23,13 @@ class ApuntesPDF(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ContactMessagePDF(models.Model):
+    apunte = models.ForeignKey(ApuntesPDF, on_delete=models.CASCADE, related_name='messages')
+    sender_email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Message about {self.apunte.name} from {self.sender_email}'

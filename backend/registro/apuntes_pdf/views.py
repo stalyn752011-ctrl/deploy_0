@@ -8,8 +8,8 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from api.models import Registro
-from .models import ApuntesPDF
-from .serializers import ApuntesPDFSerializer
+from .models import ApuntesPDF, ContactMessagePDF
+from .serializers import ApuntesPDFSerializer, ContactMessagePDFSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,32 @@ class ApuntesPDFDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ApuntesPDFSerializer
     lookup_field = 'id'
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        if data.get('pdf') and not data.get('pdf_url'):
+            base_url = getattr(settings, 'BASE_URL', 'http://localhost:8000')
+            data['pdf_url'] = f"{base_url}{data['pdf']}"
+        return Response(data)
+
     def perform_destroy(self, instance):
         if instance.pdf and os.path.isfile(instance.pdf.path):
             os.remove(instance.pdf.path)
         instance.delete()
+
+
+class ContactMessagePDFCreateView(generics.CreateAPIView):
+    queryset = ContactMessagePDF.objects.all()
+    serializer_class = ContactMessagePDFSerializer
+
+
+class ContactMessagePDFListView(generics.ListAPIView):
+    serializer_class = ContactMessagePDFSerializer
+
+    def get_queryset(self):
+        qs = ContactMessagePDF.objects.select_related('apunte').all()
+        author_email = self.request.query_params.get('author_email')
+        if author_email:
+            qs = qs.filter(apunte__author__email=author_email)
+        return qs.order_by('-created_at')

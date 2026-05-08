@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ApuntesPDF
+from .models import ApuntesPDF, ContactMessagePDF
 
 
 class ApuntesPDFSerializer(serializers.ModelSerializer):
@@ -20,3 +20,11 @@ class ApuntesPDFSerializer(serializers.ModelSerializer):
         if obj.author:
             return obj.author.email
         return None
+
+
+class ContactMessagePDFSerializer(serializers.ModelSerializer):
+    apunte_name = serializers.CharField(source='apunte.name', read_only=True)
+
+    class Meta:
+        model = ContactMessagePDF
+        fields = '__all__'

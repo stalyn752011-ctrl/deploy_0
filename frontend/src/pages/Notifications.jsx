@@ -10,11 +10,20 @@ function Notifications() {
     const stored = localStorage.getItem('user');
     if (!stored) { setLoading(false); return; }
     const user = JSON.parse(stored);
+    const email = encodeURIComponent(user.email);
 
-    fetch(`${API.contactMessagesList}?author_email=${encodeURIComponent(user.email)}`)
-      .then(res => res.json())
-      .then(data => setMessages(data))
-      .catch(() => setMessages([]))
+    Promise.all([
+      fetch(`${API.contactMessagesList}?author_email=${email}`).then(r => r.json()).catch(() => []),
+      fetch(`${API.contactMessagesPdfList}?author_email=${email}`).then(r => r.json()).catch(() => []),
+    ])
+      .then(([courseMsgs, pdfMsgs]) => {
+        const all = [
+          ...courseMsgs.map(m => ({ ...m, type: 'course', label: m.course_name })),
+          ...pdfMsgs.map(m => ({ ...m, type: 'pdf', label: m.apunte_name })),
+        ];
+        all.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setMessages(all);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -41,16 +50,20 @@ function Notifications() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {messages.map(msg => (
             <div
-              key={msg.id}
+              key={`${msg.type}-${msg.id}`}
               style={{
                 background: '#fff',
                 border: '1px solid #e8e5ed',
                 borderRadius: 12,
                 padding: '16px 20px',
+                borderLeft: `4px solid ${msg.type === 'pdf' ? '#e74c3c' : '#8b7fc8'}`,
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                <strong style={{ fontSize: '0.95rem' }}>{msg.course_name}</strong>
+                <strong style={{ fontSize: '0.95rem' }}>
+                  {msg.type === 'pdf' ? '📄 ' : '🎬 '}
+                  {msg.label}
+                </strong>
                 <span style={{ fontSize: '0.8rem', color: '#888' }}>
                   {new Date(msg.created_at).toLocaleString()}
                 </span>
