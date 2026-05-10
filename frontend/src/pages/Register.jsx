@@ -30,7 +30,7 @@ function Register() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("user", JSON.stringify({ nombre: data.nombre, email: data.email, language: "es" }));
-        navigate("/profile");
+        navigate("/landing");
       } else {
         alert("Error al registrarse");
       }

@@ -1,24 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Navbar() {
   const [search, setSearch] = useState('');
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
   const navigate = useNavigate();
   const storedUser = localStorage.getItem('user');
   const user = storedUser ? JSON.parse(storedUser) : null;
   const initials = user ? user.nombre.charAt(0).toUpperCase() : 'TU';
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const onSearchKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -29,7 +17,6 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    setMenuOpen(false);
     navigate('/login');
   };
 
@@ -57,22 +44,16 @@ function Navbar() {
           <Link to="/ver-cursos">Ver Cursos</Link>
         </nav>
 
-        <div className="actions" ref={menuRef}>
+        <div className="actions">
           <Link to="/notifications" className="icon-btn bell" aria-label="Notificaciones">🔔</Link>
-          <div className="avatar-wrap">
-            <button
-              className="avatar-btn avatar-link"
-              onClick={() => setMenuOpen((prev) => !prev)}
-              aria-label="Menú de usuario"
-              aria-expanded={menuOpen}
-            >
-              {initials}
-            </button>
-            <div className={`avatar-menu${menuOpen ? ' open' : ''}`}>
-              <button className="avatar-menu-btn" onClick={() => { navigate('/profile'); setMenuOpen(false); }}>Mis Datos</button>
-              <button className="avatar-menu-btn" onClick={handleLogout}>Cerrar sesión</button>
-            </div>
-          </div>
+          <button
+            className="avatar-btn"
+            onClick={() => navigate('/profile')}
+            aria-label="Menú de usuario"
+          >
+            {initials}
+          </button>
+          <button className="icon-btn logout-btn" onClick={handleLogout} aria-label="Cerrar sesión" title="Cerrar sesión">🚪</button>
         </div>
       </div>
     </header>
