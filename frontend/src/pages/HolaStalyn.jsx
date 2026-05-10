@@ -2,7 +2,18 @@ import React from 'react';
 
 function HolaStalyn() {
   return (
-    <div style={styles.body}>
+    <div className="hola-stalyn-page" style={styles.body}>
+      <style>{`
+        @media (max-width: 768px) {
+          .hola-stalyn-page > nav { width: 0 !important; overflow: hidden !important; padding: 0 !important; border: none !important; }
+          .hola-stalyn-page > div { margin-left: 0 !important; }
+          .hola-stalyn-page header { padding: 10px 16px !important; gap: 12px !important; }
+          .hola-stalyn-page header div:first-child { max-width: 100% !important; }
+          .hola-stalyn-page section { flex-direction: column !important; padding: 24px !important; gap: 20px !important; }
+          .hola-stalyn-page section div:last-child { display: none !important; }
+          .hola-stalyn-page > div > div { padding: 16px !important; }
+        }
+      `}</style>
       {/* Sidebar */}
       <nav style={styles.sidebar}>
         <div style={styles.sidebarLogo}>

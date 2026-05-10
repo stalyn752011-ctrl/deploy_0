@@ -60,8 +60,18 @@ function VerApuntesPdf() {
   };
 
   return (
-    <div style={styles.page}>
-      <section style={styles.hero}>
+    <div className="ver-apuntes-page" style={styles.page}>
+      <style>{`
+        @media (max-width: 768px) {
+          .ver-apuntes-page .hero-section { flex-direction: column !important; padding: 24px 20px !important; gap: 20px !important; margin: 16px 16px 24px !important; }
+          .ver-apuntes-page .hero-section h1 { font-size: 28px !important; }
+          .ver-apuntes-page .hero-section .hero-illust { display: none !important; }
+          .ver-apuntes-page .content-area { padding: 0 16px 24px !important; }
+          .ver-apuntes-page .modal-content { padding: 20px !important; margin: 10px !important; }
+          .ver-apuntes-page .modal-content h2 { font-size: 20px !important; }
+        }
+      `}</style>
+      <section className="hero-section" style={styles.hero}>
         <div style={styles.heroText}>
           <span style={styles.heroLabel}>PDF Notes Available</span>
           <h1 style={styles.heroH1}>Study with<br/><span style={{color:'#8b7fc8'}}>PDF notes</span></h1>
@@ -71,7 +81,7 @@ function VerApuntesPdf() {
             Browse Notes
           </button>
         </div>
-        <div style={styles.heroIllust}>
+        <div className="hero-illust" style={styles.heroIllust}>
           <svg viewBox="0 0 320 240" fill="none" width="320" height="240">
             <circle cx="160" cy="120" r="100" fill="rgba(139,127,200,.1)"/>
             <circle cx="160" cy="120" r="70" fill="rgba(139,127,200,.08)"/>
@@ -101,7 +111,7 @@ function VerApuntesPdf() {
         </div>
       </section>
 
-      <div style={styles.content}>
+      <div className="content-area" style={styles.content}>
         <div style={styles.sectionHeader}>
           <h2 style={styles.sectionH2}>Available PDF Notes</h2>
           <a href="#" style={styles.sectionLink}>View all →</a>
@@ -123,7 +133,7 @@ function VerApuntesPdf() {
 
       {isModalOpen && selectedApunte && (
         <div style={styles.modalOverlay} onClick={closeModal}>
-          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <button style={styles.modalClose} onClick={closeModal}>×</button>
             <h2 style={styles.modalTitle}>{selectedApunte.name}</h2>
             <p style={styles.modalDesc}>{selectedApunte.description}</p>

@@ -384,11 +384,13 @@
   .sidebar-nav {
     flex-direction: row;
     overflow-x: auto;
+    padding-bottom: 4px;
   }
 
   .sidebar-link {
     white-space: nowrap;
     padding: 10px 14px;
+    font-size: 0.85rem;
   }
 
   .profile-main {
@@ -399,7 +401,60 @@
     padding: 28px 20px 40px;
   }
 
+  .profile-header h2 {
+    font-size: 1.2rem;
+  }
+
   .profile-form {
     padding: 0 20px 24px;
+  }
+
+  .my-courses-section {
+    padding: 20px;
+  }
+
+  .course-item {
+    flex-wrap: wrap;
+  }
+
+  .course-thumb {
+    width: 60px;
+    height: 36px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-sidebar {
+    padding: 16px;
+  }
+
+  .sidebar-user {
+    gap: 8px;
+  }
+
+  .sidebar-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.8rem;
+  }
+
+  .sidebar-name {
+    font-size: 0.9rem;
+  }
+
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 1.2rem;
   }
 }

@@ -40,17 +40,18 @@ function Notifications() {
   }
 
   return (
-    <main className="container" style={{ paddingTop: 40, maxWidth: 720, margin: '0 auto' }}>
+    <main className="container notifications-page" style={{ paddingTop: 40, maxWidth: 720, margin: '0 auto' }}>
       <h2 style={{ marginBottom: 24 }}>Notifications</h2>
       {loading ? (
         <p>Loading...</p>
       ) : messages.length === 0 ? (
         <p style={{ color: '#888' }}>No messages yet.</p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="notifications-list" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {messages.map(msg => (
             <div
               key={`${msg.type}-${msg.id}`}
+              className="notification-card"
               style={{
                 background: '#fff',
                 border: '1px solid #e8e5ed',
@@ -59,21 +60,27 @@ function Notifications() {
                 borderLeft: `4px solid ${msg.type === 'pdf' ? '#e74c3c' : '#8b7fc8'}`,
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+              <div className="notification-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, gap: 8 }}>
                 <strong style={{ fontSize: '0.95rem' }}>
                   {msg.type === 'pdf' ? '📄 ' : '🎬 '}
                   {msg.label}
                 </strong>
-                <span style={{ fontSize: '0.8rem', color: '#888' }}>
+                <span style={{ fontSize: '0.8rem', color: '#888', whiteSpace: 'nowrap' }}>
                   {new Date(msg.created_at).toLocaleString()}
                 </span>
               </div>
-              <p style={{ margin: '0 0 6px', fontSize: '0.9rem', color: '#444' }}>{msg.message}</p>
+              <p style={{ margin: '0 0 6px', fontSize: '0.9rem', color: '#444', wordBreak: 'break-word' }}>{msg.message}</p>
               <small style={{ color: '#888' }}>From: {msg.sender_email}</small>
             </div>
           ))}
         </div>
       )}
+      <style>{`
+        @media (max-width: 640px) {
+          .notification-card { padding: 12px 14px !important; }
+          .notification-header { flex-direction: column; gap: 4px !important; }
+        }
+      `}</style>
     </main>
   );
 }

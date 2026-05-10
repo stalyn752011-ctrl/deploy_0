@@ -810,4 +810,97 @@
     flex-direction: column;
     align-items: center;
   }
+
+  .about-section,
+  .categories-section,
+  .cta-section {
+    padding: 60px 0;
+  }
+
+  .about-image {
+    padding: 24px;
+    min-height: 220px;
+  }
+
+  .partners-section {
+    padding: 40px 0;
+  }
+
+  .section-header {
+    margin-bottom: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-hero {
+    padding: 40px 0 60px;
+  }
+
+  .landing-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .hero-container {
+    padding: 0 16px;
+  }
+
+  .hero-badge {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .btn-cta,
+  .btn-demo,
+  .btn-ghost-white {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+
+  .hero-illustration {
+    height: 220px;
+  }
+
+  .laptop-screen {
+    width: 220px;
+  }
+
+  .editor-content {
+    padding: 12px;
+    font-size: 0.7rem;
+  }
+
+  .categories-grid {
+    padding: 0 16px;
+  }
+
+  .category-card {
+    padding: 24px 20px;
+  }
+
+  .cta-card {
+    padding: 40px 16px;
+    border-radius: 16px;
+  }
+
+  .about-container {
+    padding: 0 16px;
+  }
+
+  .stats-grid {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .about-content h2,
+  .section-header h2,
+  .cta-card h2 {
+    font-size: 1.6rem;
+  }
 }

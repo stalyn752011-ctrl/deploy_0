@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 function Navbar() {
   const [search, setSearch] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
   const storedUser = localStorage.getItem('user');
@@ -37,6 +38,10 @@ function Navbar() {
       <div className="container nav-inner">
         <Link className="brand" to="/"><span className="logo">✨</span><span className="brand-text">Growly</span></Link>
 
+        <button className={`hamburger${navOpen ? ' open' : ''}`} onClick={() => setNavOpen(prev => !prev)} aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+
         <div className="search-wrap">
           <input
             id="global-search"
@@ -48,7 +53,7 @@ function Navbar() {
           />
         </div>
 
-        <nav className="main-nav"> 
+        <nav className={`main-nav${navOpen ? ' open' : ''}`}> 
           <Link to="/landing">Landing</Link>
           <Link to="/subida-cursos">Subir Curso</Link>
           <Link to="/apuntes-pdf">Subir Notas</Link>
