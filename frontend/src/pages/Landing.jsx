@@ -75,7 +75,7 @@ function LandingHero() {
                     <span className="code-keyword">const</span> <span className="code-func">Learning</span> = () =&gt; {'{'}<br />
                     &nbsp;&nbsp;<span className="code-keyword">return</span> (<br />
                     &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span className="code-tag">div</span> className=<span className="code-string">"classroom"</span>&gt;<br />
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span className="code-tag">h1</span>&gt;Hello World!&lt;/<span className="code-tag">h1</span>&gt;<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span className="code-tag">h1</span>&gt;Growly&lt;/<span className="code-tag">h1</span>&gt;<br />
                     &nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span className="code-tag">div</span>&gt;<br />
                     &nbsp;&nbsp;);<br />
                     {'}'};

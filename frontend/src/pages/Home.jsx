@@ -14,7 +14,7 @@ function Hero() {
     <section className="hero">
       <div className="container">
         <div className="kicker center">Transforma tu scroll en aprendizaje</div>
-        <h1 className="center">holamundo</h1>
+        <h1 className="center">growly</h1>
         <p className="center">Aprende, Enseña, Crece — Una plataforma de intercambio de conocimientos donde cada sesión cuenta.</p>
         <div className="hero-ctas">
           <Link className="btn-primary" to="/register">Registrarse</Link>
