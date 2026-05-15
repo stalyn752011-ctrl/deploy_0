@@ -127,6 +127,7 @@ USE_TZ = True
 # STATIC
 # ======================
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # ======================
 # CLOUDINARY
@@ -154,7 +155,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # ======================
 # BASE URL
 # ======================
-BASE_URL = 'http://localhost:8000'
+BASE_URL = 'https://stalyn3108.pythonanywhere.com'
 
 
 # ======================

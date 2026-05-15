@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://stalyn3108.pythonanywhere.com',
         changeOrigin: true,
       },
     },
