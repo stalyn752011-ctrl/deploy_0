@@ -10,6 +10,8 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [myCourses, setMyCourses] = useState([]);
   const [coursesLoading, setCoursesLoading] = useState(false);
+  const [myPdfs, setMyPdfs] = useState([]);
+  const [pdfsLoading, setPdfsLoading] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('user');
@@ -42,6 +44,13 @@ function Profile() {
       .then(data => setMyCourses(data))
       .catch(() => setMyCourses([]))
       .finally(() => setCoursesLoading(false));
+
+    setPdfsLoading(true);
+    fetch(`${API.apuntesPdfList}?author_email=${encodeURIComponent(user.email)}`)
+      .then(res => res.json())
+      .then(data => setMyPdfs(data))
+      .catch(() => setMyPdfs([]))
+      .finally(() => setPdfsLoading(false));
   }, []);
 
   const handleChange = (e) => {
@@ -88,6 +97,18 @@ function Profile() {
       const res = await fetch(API.cursoDetail(courseID), { method: 'DELETE' });
       if (res.ok) {
         setMyCourses(prev => prev.filter(c => c.courseID !== courseID));
+      }
+    } catch (err) {
+      console.error('Delete failed', err);
+    }
+  };
+
+  const handleDeletePdf = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this PDF?')) return;
+    try {
+      const res = await fetch(API.apuntesPdfDetail(id), { method: 'DELETE' });
+      if (res.ok) {
+        setMyPdfs(prev => prev.filter(p => p.id !== id));
       }
     } catch (err) {
       console.error('Delete failed', err);
@@ -210,6 +231,34 @@ function Profile() {
                       className="course-delete-btn"
                       onClick={() => handleDeleteCourse(course.courseID)}
                       title="Delete course"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <h3 style={{ marginTop: '32px' }}>My Uploaded PDFs</h3>
+            {pdfsLoading ? (
+              <p className="courses-loading">Loading PDFs...</p>
+            ) : myPdfs.length === 0 ? (
+              <p className="courses-empty">No PDFs uploaded yet.</p>
+            ) : (
+              <div className="courses-list">
+                {myPdfs.map(pdf => (
+                  <div key={pdf.id} className="course-item">
+                    <div className="course-info">
+                      <span className="course-name">{pdf.name}</span>
+                      <span className="course-category">{pdf.description ? pdf.description.substring(0, 50) : ''}</span>
+                    </div>
+                    {pdf.pdf_url && (
+                      <a href={pdf.pdf_url} target="_blank" rel="noopener noreferrer" className="pdf-link" title="Open PDF">📄</a>
+                    )}
+                    <button
+                      className="course-delete-btn"
+                      onClick={() => handleDeletePdf(pdf.id)}
+                      title="Delete PDF"
                     >
                       ✕
                     </button>
