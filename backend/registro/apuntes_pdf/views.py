@@ -1,10 +1,8 @@
-import os
 import logging
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status as http_status
-from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from api.models import Registro
@@ -42,9 +40,8 @@ class ApuntesPDFCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         instance = serializer.save()
-        base_url = getattr(settings, 'BASE_URL', '')
-        if base_url and instance.pdf:
-            instance.pdf_url = f'{base_url}{instance.pdf.url}'
+        if instance.pdf:
+            instance.pdf_url = instance.pdf.url
             instance.save(update_fields=['pdf_url'])
 
 
@@ -62,10 +59,9 @@ class ApuntesPDFListView(generics.ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
-        base_url = getattr(settings, 'BASE_URL', 'http://localhost:8000')
         for item in data:
             if item.get('pdf') and not item.get('pdf_url'):
-                item['pdf_url'] = f"{base_url}{item['pdf']}"
+                item['pdf_url'] = item['pdf']
         return Response(data)
 
 
@@ -79,14 +75,8 @@ class ApuntesPDFDetailView(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance)
         data = serializer.data
         if data.get('pdf') and not data.get('pdf_url'):
-            base_url = getattr(settings, 'BASE_URL', 'http://localhost:8000')
-            data['pdf_url'] = f"{base_url}{data['pdf']}"
+            data['pdf_url'] = data['pdf']
         return Response(data)
-
-    def perform_destroy(self, instance):
-        if instance.pdf and os.path.isfile(instance.pdf.path):
-            os.remove(instance.pdf.path)
-        instance.delete()
 
 
 class ContactMessagePDFCreateView(generics.CreateAPIView):

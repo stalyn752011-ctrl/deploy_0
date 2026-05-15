@@ -1,4 +1,5 @@
 import os
+import cloudinary
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +29,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # CLOUDINARY
+    'cloudinary_storage',
+    'cloudinary',
 
     # REST FRAMEWORK
     'rest_framework',
@@ -124,16 +129,31 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # ======================
-# MEDIA
+# CLOUDINARY
+# ======================
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dtifl9ago',
+    'API_KEY': '416631937514541',
+    'API_SECRET': 'G9zavGGZ1oL8TzlcaFrn9NBpbco',
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET'],
+    secure=True,
+)
+
+# ======================
+# MEDIA (fallback local)
 # ======================
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ======================
-# BASE URL (para URLs absolutas de videos)
+# BASE URL
 # ======================
-# Local: 'http://localhost:8000'
-# Externo: 'http://tu-ip:8000' o dominio publico
 BASE_URL = 'http://localhost:8000'
 
 

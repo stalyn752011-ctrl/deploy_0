@@ -1,10 +1,8 @@
-import os
 import logging
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status as http_status
-from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from api.models import Registro
@@ -24,7 +22,6 @@ class CursoCreateView(generics.CreateAPIView):
         try:
             logger.info(f'Received upload request: {request.data.get("name")}')
             logger.info(f'Video file: {request.FILES.get("video")}')
-            # Build mutable dict without deep-copying file objects
             data = {key: request.data[key] for key in request.data.keys()}
             author_email = data.get('author')
             if author_email:
@@ -43,9 +40,8 @@ class CursoCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         instance = serializer.save()
-        base_url = getattr(settings, 'BASE_URL', '')
-        if base_url and instance.video:
-            instance.video_url = f'{base_url}{instance.video.url}'
+        if instance.video:
+            instance.video_url = instance.video.url
             instance.save(update_fields=['video_url'])
 
 
@@ -63,10 +59,9 @@ class CursoListView(generics.ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
-        base_url = getattr(settings, 'BASE_URL', 'http://localhost:8000')
         for item in data:
             if item.get('video') and not item.get('video_url'):
-                item['video_url'] = f"{base_url}{item['video']}"
+                item['video_url'] = item['video']
         return Response(data)
 
 
@@ -74,11 +69,6 @@ class CursoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = SubidaCurso.objects.all()
     serializer_class = SubidaCursoSerializer
     lookup_field = 'courseID'
-
-    def perform_destroy(self, instance):
-        if instance.video and os.path.isfile(instance.video.path):
-            os.remove(instance.video.path)
-        instance.delete()
 
 
 class ContactMessageCreateView(generics.CreateAPIView):
