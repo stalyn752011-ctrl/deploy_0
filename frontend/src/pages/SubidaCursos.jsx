@@ -21,7 +21,14 @@ function SubidaCursos() {
   };
 
   const handleFileChange = (e) => {
-    setVideoFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file && file.size > 100 * 1024 * 1024) {
+      setPopup({ show: true, message: 'The video must be smaller than 100MB', type: 'error' });
+      setVideoFile(null);
+      e.target.value = '';
+      return;
+    }
+    setVideoFile(file);
   };
 
   const closePopup = () => setPopup({ show: false, message: '', type: '' });
@@ -33,6 +40,12 @@ function SubidaCursos() {
 
     if (!videoFile) {
       setPopup({ show: true, message: 'Por favor selecciona un video', type: 'error' });
+      setLoading(false);
+      return;
+    }
+
+    if (videoFile.size > 100 * 1024 * 1024) {
+      setPopup({ show: true, message: 'The video must be smaller than 100MB', type: 'error' });
       setLoading(false);
       return;
     }
