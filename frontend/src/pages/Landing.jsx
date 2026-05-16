@@ -303,15 +303,7 @@ function CTASection() {
         <div className="cta-card">
           <h2>Ready to Start Learning?</h2>
           <p>Join thousands of students already building their future with Growly.</p>
-          <div className="cta-actions">
-            <Link className="btn-cta btn-cta-white" to="/register">
-              Create Free Account
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
-            <Link className="btn-ghost-white" to="/login">Sign In</Link>
-          </div>
+          
         </div>
       </div>
     </section>
