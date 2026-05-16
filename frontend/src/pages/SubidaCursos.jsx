@@ -104,7 +104,7 @@ function SubidaCursos() {
             <h1>Subir Curso</h1>
             <p className="subida-subtitle">Completa la información del curso y sube el video correspondiente</p>
           </div>
-          <Link to="/apuntes-pdf" className="btn-ghost">Subir Notas</Link>
+          <Link to="/apuntes-pdf" className="btn-ghost">Subir pdf</Link>
         </div>
 
         <form className="subida-form" onSubmit={handleSubmit}>

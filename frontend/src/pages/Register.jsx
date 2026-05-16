@@ -30,7 +30,7 @@ function Register() {
       });
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("user", JSON.stringify({ nombre: data.nombre, email: data.email, language: "es" }));
+        localStorage.setItem("user", JSON.stringify({ nombre: data.nombre, email: data.email, language: formData.language }));
         setShowSuccess(true);
       } else {
         alert("Error al registrarse");
@@ -54,6 +54,12 @@ function Register() {
 
           <label htmlFor="password">Contraseña</label>
           <input id="password" name="password" type="password" placeholder="••••••" value={formData.password} onChange={handleChange} required />
+
+          <label htmlFor="language">Idioma / Language</label>
+          <select id="language" name="language" value={formData.language} onChange={handleChange} style={styles.select}>
+            <option value="es">Español</option>
+            <option value="en">English</option>
+          </select>
 
           <button className="submit" type="submit">Crear cuenta</button>
         </form>
@@ -127,6 +133,15 @@ const styles = {
     fontSize: 14,
     cursor: "pointer",
     fontWeight: 600,
+  },
+  select: {
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: 8,
+    border: "1px solid #ccc",
+    fontSize: 14,
+    background: "#fff",
+    marginBottom: 16,
   },
   btnPrimary: {
     padding: "10px 24px",
