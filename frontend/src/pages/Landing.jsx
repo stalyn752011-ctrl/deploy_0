@@ -29,20 +29,7 @@ function LandingHero() {
             Master HTML, CSS, JavaScript and more with expert instructors in real-time.
             Join thousands of students building their future today.
           </p>
-          <div className="hero-actions">
-            <Link className="btn-cta" to="/register">
-              Get Started Free
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
-            <button className="btn-demo">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="5,3 19,12 5,21" />
-              </svg>
-              Watch Demo
-            </button>
-          </div>
+          
           <div className="hero-stats">
             <div className="stat-item">
               <span className="stat-number">50k+</span>
