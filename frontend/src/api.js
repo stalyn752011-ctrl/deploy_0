@@ -1,4 +1,4 @@
-const BASE = 'https://stalyn3108.pythonanywhere.com';
+const BASE = 'http://127.0.0.1:8000';
 
 export const API = {
   login: `${BASE}/api/login/`,

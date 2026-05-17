@@ -155,7 +155,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # ======================
 # BASE URL
 # ======================
-BASE_URL = 'https://stalyn3108.pythonanywhere.com'
+BASE_URL = 'http://127.0.0.1:8000'
 
 
 # ======================
