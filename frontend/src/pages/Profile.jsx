@@ -4,7 +4,6 @@ import './Profile.css';
 import { API } from '../api';
 
 function Profile() {
-  const [activeNav, setActiveNav] = useState('my-courses');
   const [formData, setFormData] = useState({ nombre: '', email: '', language: 'en' });
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -117,39 +116,10 @@ function Profile() {
 
   const initials = formData.nombre ? formData.nombre.charAt(0).toUpperCase() : '?';
 
-  const navItems = [
-    { id: 'my-courses', label: 'My Courses', icon: '📚' },
-    { id: 'settings', label: 'Settings', icon: '⚙️' },
-    { id: 'help', label: 'Help', icon: '❓' },
-  ];
-
   if (loading) return <main className="profile-dashboard"><p>Loading...</p></main>;
 
   return (
     <main className="profile-dashboard">
-      <aside className="profile-sidebar">
-        <div className="sidebar-user">
-          <div className="sidebar-avatar">{initials}</div>
-          <span className="sidebar-name">{formData.nombre}</span>
-        </div>
-        <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              className={`sidebar-link ${activeNav === item.id ? 'active' : ''}`}
-              onClick={() => setActiveNav(item.id)}
-            >
-              <span className="sidebar-icon">{item.icon}</span>
-              {item.label}
-            </button>
-          ))}
-          <Link to="/subida-cursos" className="sidebar-link upload-link">
-            <span className="sidebar-icon">🎬</span>
-            Upload Video
-          </Link>
-        </nav>
-      </aside>
-
       <section className="profile-main">
         <div className="profile-card">
           <div className="profile-header">
